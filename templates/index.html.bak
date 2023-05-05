@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clothing Recommendation</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <h3>ChatGPT를 활용한 실전 프로젝트</h3>
+    <p>ChatGPT를 활용한 "날씨기반 의류 추천 서비스"</p>
+    <p>ChatGPT api, BeautifulSoup</p>
+    <p>기간 : 2023/04/24 ~ 2023/05/31</p>
+    <h1>Clothing Recommendation Based on Weather</h1>
+    <p>Today's weather is: <span id="inputWeather">===이곳은 날씨 정보 입니다===</span></p>
+    <p>Recommended clothes:</p>
+    <ul>===이곳은 옷 추천 항목입니다===</ul>
+    <ul>===이곳은 옷 추천 항목입니다===</ul>
+    <ul>===이곳은 옷 추천 항목입니다===</ul>
+    <ul>===이곳은 옷 추천 항목입니다===</ul>
+    <ul>===이곳은 옷 추천 항목입니다===</ul>
+
+    <input id='name' placeholder="당신의 특징을 말해주세요." onkeyup='printName()'/>
+    <div id='result'></div>
+    <input type='button' id='btn' onclick='changeBtnName()' value='추천 시작'/>
+
+    <script src="{{ url_for('static', filename='js/scriipt.js')}}"></script>
+
+</body>
+
+</html>
