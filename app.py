@@ -4,6 +4,11 @@ import openai
 from urllib.request import urlopen
 # beautifulSoup 이용하기, 정보를 쉽게 가져오도록 beautiful soup 이용
 from bs4 import BeautifulSoup
+import pandas as pd
+from time import localtime
+from time import time
+
+
 
 ## 네이버 날씨에서 정보 가져오기
 def get_weather():
@@ -25,6 +30,7 @@ def get_weather():
 
 # openAi
 def openAi(question):
+
     key1 = "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"
     openai.api_key = key1
 
@@ -42,30 +48,38 @@ def openAi(question):
     answers=response.choices[0].message.content.split("\n\n")
     return answers
 
+def save_csv(columns, path):
+    my_dict = {"month":[columns[0]],"temperature": [columns[1]], "wether": [columns[2]]} # DataFrame으로 만들어 csv로
+    df1=pd.DataFrame(my_dict)
+    df1.to_csv(path,mode='a',header=False,index=False)
+
 app = Flask(__name__,template_folder="templates") # flask name 선언
 
 @app.route("/") #flask 웹 페이지 경로
 @app.route("/main")
 def main(): # 경로에서 실행될 기능 선언
-#    temperature,weath,windy = get_weather()
-    temperature,weath,windy=("0도","흐림","바람 붐")
+    temperature,weath,windy = get_weather()
+
     return render_template('index.html',
                            temperature=temperature,
                            weath=weath,
                            windy=windy) # 날씨값 전달
 
-@app.route('/post', methods=['GET','POST']) 
+@app.route('/post', methods=['GET','POST']) # post형식으로 값을 받아왔을 때
 def post():
-    if request.method == 'POST': # post형식으로 값을 받아왔을 때
+    temperature,weath,windy = get_weather()
+    
+    month=localtime(time()).tm_mon # 검색한 월
+    
+    save_path="db/sample.csv"
+    save_csv([month,temperature[:-2],weath],save_path) #검색한 월,기온,날씨,저장 위치   
+    
+    if request.method == 'POST':
         value = request.form['id_name'] # value에 받아온 값 저장
-        value = str(value)
-#    values=openAi(value)
-    values = []
-    for i in range(1,6):
-        values.append(value+str(i))
+        value = temperature + ' ' + weath + ' ' +str(month) + ' ' + str(value)
+    values=openAi(value)
+    
     return render_template('post.html', values = values) # post.html로 값 전달
-
+    
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=9000, debug=True)
-
-
