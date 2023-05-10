@@ -1,31 +1,27 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clothing Recommendation</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <title>Select Gender</title>
+    <link rel="stylesheet" type="text/css" href="{{url_for('static',filename='indexStyle.css')}}">
+    <!--"../static/styles.css"-->
 </head>
 <body>
-    <h3>ChatGPT를 활용한 실전 프로젝트</h3>
-    <p>ChatGPT를 활용한 "날씨기반 의류 추천 서비스"</p>
-    <p>ChatGPT api, BeautifulSoup</p>
-    <p>기간 : 2023/04/24 ~ 2023/05/31</p>
-    <h1>Clothing Recommendation Based on Weather</h1>
-    <p>Today's weather is: <span id="inputWeather">==={{temperature}}{{weath}}{{windy}}===</span></p>
-    <p>Recommended clothes:</p>
-    
-    <input id='name' placeholder="당신의 특징을 말해주세요." onkeyup='printName()'/>
-    <div id='result'></div>
-    <input type='button' id='btn' onclick='changeBtnName()' value='추천 시작'/>
-    
-    <form action="\post" method="post" class="input-form">
-        <textarea type="text" name='id_name' value="tmp tmp tmp" class="input-text"></textarea>
-        <input type="submit" value="submit" class="input-btn">
-    </form>
-
-    <script src="{{ url_for('static', filename='js/scriipt.js')}}"></script>
+    <div class="container">
+        
+        <video autoplay muted loop id="bg-video">
+           <source src="videos.mp4" type="video/mp4">
+        </video>
+        
+        <div class="overlay"></div>
+        <h1>Select Your Gender</h1>
+        <div class="button-container">
+            <a href="/male" class="gender-button male-button">Male</a>
+            <a href="/female" class="gender-button female-button">Female</a>
+        </div>
+    </div>
 
 </body>
-
 </html>
+
+<link rel="stylesheet" type="text/css" href="../static/indexStyle.css">
+

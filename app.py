@@ -1,85 +1,98 @@
-from flask import Flask,render_template,request
+# 명령어 추가 리스트
+msg_input = []
+
+# openAi api_key 가져오기, 질문 입력 및 답변 출력
 import openai
-# url의 해당정보 가져오기
-from urllib.request import urlopen
-# beautifulSoup 이용하기, 정보를 쉽게 가져오도록 beautiful soup 이용
-from bs4 import BeautifulSoup
-import pandas as pd
-from time import localtime
-from time import time
-
-
-
-## 네이버 날씨에서 정보 가져오기
-def get_weather():
-    url = "https://weather.naver.com"
-    page = urlopen(url)
-    soup = BeautifulSoup(page,'lxml')
-    # 날씨 # 온도 # 바람 # 목적 # 습도 # 미세먼지
-    temp = soup.find("strong",class_="current").text
-#    print(temp[6:])
-    # 온도
-    temperature = temp[6:]
-    # 날씨
-    weath = soup.find("span",class_="weather").text
-    #print(weath)
-    # 바람
-    windy = soup.find("ul",class_="weather_table list")
-    #print(windy)
-    return (temperature,weath,windy)
-
-# openAi
-def openAi(question):
-
-    key1 = "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"
+# msg에는 웹에서 입력한 value 값 전달
+def openAi(msg):
+    key1 = "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" #key값
     openai.api_key = key1
-
-    text1 = question
-    msg = text1
-
-    msg_input = [ ]
     msg_input.append( {"role":"user", "content":msg})
 
+    # 답변 생성, model값 변경으로 다른 모델 사용가능
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=msg_input
     )
 
+    # 답변, 답변에 따라 [1],[2]...까지 수 증가
     answers=response.choices[0].message.content.split("\n\n")
+    #answers=response.choices[0].message.content
+    print(answers)
     return answers
 
-def save_csv(columns, path):
-    my_dict = {"month":[columns[0]],"temperature": [columns[1]], "wether": [columns[2]]} # DataFrame으로 만들어 csv로
-    df1=pd.DataFrame(my_dict)
-    df1.to_csv(path,mode='a',header=False,index=False)
 
-app = Flask(__name__,template_folder="templates") # flask name 선언
+# 기본 명령어 추가 => """내용""""
+# system => 시스템의 기본적인 역할 부여
+# assistant => AI가 모르는 내용 보조
+def basicAssistant():
+    msg_input.append(
+        {"role":"system","content":"""너는 최고의 코디네이터고 나에게 옷을 추천해주는 사람이야"""})
+    msg_input.append(
+        {"role":"assistant","content":"""메이드처럼 나에게 답해줘"""})
 
-@app.route("/") #flask 웹 페이지 경로
-@app.route("/main")
-def main(): # 경로에서 실행될 기능 선언
-    temperature,weath,windy = get_weather()
 
-    return render_template('index.html',
-                           temperature=temperature,
-                           weath=weath,
-                           windy=windy) # 날씨값 전달
+# ===============Beautifulsoup를 이용한 날씨 정보 추가===============
+# basicAssitant() 함수에 추가 가능, 현재는 구분을 위해 따로 작성
+# url의 해당정보 가져오기
+from urllib.request import urlopen
+# beautifulSoup 이용하기, 정보를 쉽게 가져오도록 beautiful soup 이용
+from bs4 import BeautifulSoup
+def weatherAssistant():
+    url = "https://weather.naver.com/" # 네이버 날씨에서 크롤링
+    page = urlopen(url)
+    soup = BeautifulSoup(page,'lxml')
+    #날씨
+    weath = soup.find("span",class_="weather").text
+    # 온도
+    temp = soup.find("strong",class_="current").text
+    now_temp = temp[1:-1]
+    weather = "오늘 날씨는 "+weath+", "+now_temp
+    # chat에 assistant 추가
+    msg_input.append({"role":"assistant","content":weather})
 
-@app.route('/post', methods=['GET','POST']) # post형식으로 값을 받아왔을 때
-def post():
-    temperature,weath,windy = get_weather()
-    
-    month=localtime(time()).tm_mon # 검색한 월
-    
-    save_path="db/sample.csv"
-    save_csv([month,temperature[:-2],weath],save_path) #검색한 월,기온,날씨,저장 위치   
-    
-    if request.method == 'POST':
-        value = request.form['id_name'] # value에 받아온 값 저장
-        value = temperature + ' ' + weath + ' ' +str(month) + ' ' + str(value)
-    values=openAi(value)
-    
-    return render_template('post.html', values = values) # post.html로 값 전달
-    
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=9000, debug=True)
+
+#============================ flask 실행============================
+from flask import Flask, render_template, request
+app = Flask(__name__)
+
+#  index페이지, 기본 페이지
+@app.route('/')
+def home():
+    msg_input.clear() # Chat 명령어 초기화
+    basicAssistant() # 기본 assistant 추가
+    weatherAssistant() # 날씨 assistant 추가
+    print(msg_input)
+    return render_template('index.html')
+
+# male페이지
+@app.route('/male')
+def malePage():
+    # chat 명령어 추가
+    msg_input.append(
+        {"role":"assistant","content":"""남자 옷을 추천해줘"""})
+    print(msg_input)
+    return render_template('male.html')
+
+# female페이지 
+@app.route('/female')
+def femalePage():
+    # chat 명령어 추가
+    msg_input.append(
+        {"role":"assistant","content":"""여자 옷을 추천해줘"""})
+    print(msg_input)
+    return render_template('female.html')
+
+# result 페이지
+@app.route('/result')
+def resultPage():
+    userQuestion = request.args.get("userQuestion")
+    aiResult = openAi(userQuestion)
+    print(msg_input)
+    return render_template('result.html',result=aiResult)
+
+if __name__ == '__main__':
+    app.run('0.0.0.0',port=5001, debug=True)
+
+# ImportError: cannot import name 'EVENT_TYPE_OPENED' from 'watchdog.events'
+# -> watchdog.events를 최신으로 업데이트 한다 : pip install --upgrade watchdog
