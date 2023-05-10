@@ -5,7 +5,7 @@ msg_input = []
 import openai
 # msg에는 웹에서 입력한 value 값 전달
 def openAi(msg):
-    key1 = "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" #key값
+    key1 = input() #key값
     openai.api_key = key1
     msg_input.append( {"role":"user", "content":msg})
 
