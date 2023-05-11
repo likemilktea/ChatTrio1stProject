@@ -11,10 +11,26 @@
 </head>
 <body>
     <div>
-        <p>Recommend</p>
-        {%for i in result%}
-        <ul>{{i}}</ul>
-        {%endfor%}
+        <div>
+            <p>Recommend    token : {{token}}</p>
+            {%for i in result%}
+            <ul>{{i}}</ul>
+            {%endfor%}
+        </div>
+        {% if token > 0 %}
+        <div class="container">
+            <form action="/result" method="get">
+                <input placeholder="상황을 입력해주세요." required name="userQuestion" type="text">
+                <button>결과 확인</button>
+            </form>
+        </div>
+        {%else%}
+        <div class="container">
+            <form action="/" method="get">
+                <button>처음으로 돌아가기</button>
+            </form>
+        </div>
+        {% endif %}
     </div>
 </body>
 </html>

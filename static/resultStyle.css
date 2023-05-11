@@ -16,8 +16,8 @@ div {
     padding: 30px;
     border-radius: 5px;
     box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-    width: 80%;
-    max-width: 800px;
+    width: 93.5%;
+    max-width: 1000px;
 }
 
 p {
@@ -37,5 +37,4 @@ ul::before {
     content: '-';
     padding-right: 10px;
 }
-
 

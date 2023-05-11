@@ -1,12 +1,15 @@
 # 명령어 추가 리스트
-msg_input = []
+msg_input = [] # 추가할 명령어
+msg_result = [] # 결과값 
+aiToken = 3 # 사용회수
 
 # openAi api_key 가져오기, 질문 입력 및 답변 출력
 import openai
 # msg에는 웹에서 입력한 value 값 전달
 def openAi(msg):
-    key1 = input() #key값
+    key1 = "$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$" #key값
     openai.api_key = key1
+    # {"role":"user", "content":msg}) => 답변, 
     msg_input.append( {"role":"user", "content":msg})
 
     # 답변 생성, model값 변경으로 다른 모델 사용가능
@@ -14,7 +17,6 @@ def openAi(msg):
         model="gpt-3.5-turbo",
         messages=msg_input
     )
-
     # 답변, 답변에 따라 [1],[2]...까지 수 증가
     answers=response.choices[0].message.content.split("\n\n")
     #answers=response.choices[0].message.content
@@ -42,7 +44,7 @@ def weatherAssistant():
     url = "https://weather.naver.com/" # 네이버 날씨에서 크롤링
     page = urlopen(url)
     soup = BeautifulSoup(page,'lxml')
-    #날씨
+    # 날씨
     weath = soup.find("span",class_="weather").text
     # 온도
     temp = soup.find("strong",class_="current").text
@@ -59,6 +61,8 @@ app = Flask(__name__)
 #  index페이지, 기본 페이지
 @app.route('/')
 def home():
+    global aiToken #변수 선언
+    aiToken = 3 # Token 재설정
     msg_input.clear() # Chat 명령어 초기화
     basicAssistant() # 기본 assistant 추가
     weatherAssistant() # 날씨 assistant 추가
@@ -69,6 +73,7 @@ def home():
 @app.route('/male')
 def malePage():
     # chat 명령어 추가
+    msg_result.clear() # Chat 결과 초기화
     msg_input.append(
         {"role":"assistant","content":"""남자 옷을 추천해줘"""})
     print(msg_input)
@@ -78,6 +83,7 @@ def malePage():
 @app.route('/female')
 def femalePage():
     # chat 명령어 추가
+    msg_result.clear() # Chat 결과 초기화
     msg_input.append(
         {"role":"assistant","content":"""여자 옷을 추천해줘"""})
     print(msg_input)
@@ -86,13 +92,18 @@ def femalePage():
 # result 페이지
 @app.route('/result')
 def resultPage():
+    global aiToken # token 개수 설정
+    aiToken=aiToken-1 # 사용시 하나씩 줄어듬
+    
     userQuestion = request.args.get("userQuestion")
-    aiResult = openAi(userQuestion)
-    print(msg_input)
-    return render_template('result.html',result=aiResult)
+    aiResult = openAi(userQuestion) # 답변
+    msg_result.append(aiResult) # 답변 리스트 저장
+    print(msg_result)
+    print(aiToken)
+    return render_template('result.html',result=msg_result, token=aiToken)
 
 if __name__ == '__main__':
-    app.run('0.0.0.0',port=5001, debug=True)
+    app.run('0.0.0.0',port=5002, debug=True)
 
 # ImportError: cannot import name 'EVENT_TYPE_OPENED' from 'watchdog.events'
 # -> watchdog.events를 최신으로 업데이트 한다 : pip install --upgrade watchdog
