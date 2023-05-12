@@ -24,6 +24,6 @@
 * Flask
 
 ### 참가 멤버
-* Jay
+* Jay https://github.com/DoorianCH/Recommend-cloths-using-ChatGpt
 * Grace https://github.com/sgnoh/ChatGPT_Project
-* Ryul https://github.com/DoorianCH/Recommend-cloths-using-ChatGpt
+* Ryul
