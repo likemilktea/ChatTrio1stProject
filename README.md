@@ -25,5 +25,5 @@
 
 ### 참가 멤버
 * Jay
-* Grace
+* Grace [https://github.com/sgnoh/ChatGPT_Project](https://github.com/sgnoh/ChatGPT_Project) 
 * Ryul
