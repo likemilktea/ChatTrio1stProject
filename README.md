@@ -17,13 +17,13 @@
     4. 만약 토큰이 모자라다면 처음 페이지로
 
 ### 사용 언어
-* python
-* JavaScript
-* Html
-* CSS
-* Flask
+    * python
+    * JavaScript
+    * Html
+    * CSS
+    * Flask
 
 ### 참가 멤버
-* Jay https://github.com/DoorianCH/Recommend-cloths-using-ChatGpt
-* Grace https://github.com/sgnoh/ChatGPT_Project
-* Ryul
+    * Jay https://github.com/DoorianCH/Recommend-cloths-using-ChatGpt
+    * Grace https://github.com/sgnoh/ChatGPT_Project
+    * Ryul
