@@ -25,5 +25,5 @@
 
 ### 참가 멤버
 * Jay
-* Grace [https://github.com/sgnoh/ChatGPT_Project](https://github.com/sgnoh/ChatGPT_Project) 
-* Ryul
+* Grace https://github.com/sgnoh/ChatGPT_Project
+* Ryul https://github.com/DoorianCH/Recommend-cloths-using-ChatGpt
